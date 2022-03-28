@@ -1,8 +1,9 @@
 package com.community.project.service;
 
 import com.community.project.entity.PostLike;
+import com.community.project.entity.Member;
+import com.community.project.entity.Post;
 import com.community.project.repository.PostLikeRepo;
-import com.community.project.repository.PostRepo;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -16,18 +17,27 @@ import java.util.List;
 @Slf4j
 public class PostLikeService {
 
-    private final PostRepo postRepo;
     private final PostLikeRepo postLikeRepo;
+    private final PostService postService;
+    private final MemberService memberService;
 
-    public PostLike savePostLike(PostLike postLike) {
-        return postLikeRepo.save(postLike);
+    public void savePostLike(Long memberId, Long postId) {
+        Member member = memberService.getMember(memberId);
+        Post post = postService.getPost(postId);
+        PostLike postLike = new PostLike(member, post);
+        postLikeRepo.save(postLike);
     }
 
     public List<PostLike> getPostLikes() {
         return postLikeRepo.findAll();
     }
 
-    public List<PostLike> getPostLikesByPostId(Long postId) {
-        return postLikeRepo.findAllByPostId(postId);
+    public List<PostLike> getLikesByPostId(Long postId) {
+        Post post = postService.getPost(postId);
+        return postLikeRepo.findPostLikesByPostId(postId);
+    }
+
+    public List<PostLike> getLikesByMemberId(Long memberId) {
+        return postLikeRepo.findPostLikesByMemberId(memberId);
     }
 }

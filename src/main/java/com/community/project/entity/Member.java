@@ -8,18 +8,21 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 
 @Entity
-@Data
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@AllArgsConstructor
-@Builder
+@Getter
 public class Member {
     @Id @GeneratedValue
     @Column(name = "member_id")
     private Long id;
 
     private String nickname;
-    private AccountType accountType;
+    private String accountType;
 
-    private String accountId;
     private Boolean quit;
+
+    public Member(String nickname, String accountType, Boolean quit) {
+        this.nickname = nickname;
+        this.accountType = accountType;
+        this.quit = quit;
+    }
 }

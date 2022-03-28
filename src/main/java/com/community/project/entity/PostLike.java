@@ -4,20 +4,25 @@ import lombok.*;
 
 import javax.persistence.*;
 
-@EqualsAndHashCode(callSuper = true)
 @Entity
-@Data
+@Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@AllArgsConstructor
-@Builder
-@IdClass(PostLikeId.class)
+@NamedEntityGraph(name = "JoinMemberAndPostWithLike", attributeNodes = {@NamedAttributeNode("member"), @NamedAttributeNode("post")})
 public class PostLike extends BaseTime {
 
-    @Id
-    @Column(name = "member_id")
-    private Long memberId;
+    @Id @GeneratedValue
+    private Long id;
 
-    @Id
-    @Column(name = "post_id")
-    private Long postId;
+    @ManyToOne(optional = false)
+    @JoinColumn(name = "member_id")
+    private Member member;
+
+    @ManyToOne(optional = false)
+    @JoinColumn(name = "post_id")
+    private Post post;
+
+    public PostLike(Member member, Post post) {
+        this.member = member;
+        this.post = post;
+    }
 }

@@ -1,11 +1,14 @@
 package com.community.project.service;
 
 import com.community.project.entity.Member;
+import com.community.project.error.CreateException;
 import com.community.project.repository.MemberRepo;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import static com.community.project.error.ErrorCode.USER_NOT_FOUND;
 
 import java.util.List;
 import java.util.Optional;
@@ -20,8 +23,10 @@ public class MemberService {
         return memberRepo.save(member);
     }
 
-    public Optional<Member> findById(Long id) {
-        return memberRepo.findById(id);
+    public Member getMember(Long id) {
+        Optional<Member> member = memberRepo.findById(id);
+        if (!member.isPresent()) throw new CreateException(USER_NOT_FOUND);
+        return member.get();
     }
 
     public List<Member> findAll() {

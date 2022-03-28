@@ -3,14 +3,14 @@ package com.community.project.entity;
 import lombok.*;
 
 import javax.persistence.*;
+import java.util.List;
 
-@EqualsAndHashCode(callSuper = true)
 @Entity
-@Data
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 @Builder
-@NamedEntityGraph(name = "JoinMember", attributeNodes = @NamedAttributeNode("member"))
+@Getter @Setter
+@NamedEntityGraph(name = "JoinMemberAndComment", attributeNodes = {@NamedAttributeNode("member")})
 public class Post extends BaseTime {
     @Id
     @GeneratedValue
@@ -23,12 +23,23 @@ public class Post extends BaseTime {
 
     private Boolean isDeleted;
 
+    @Column(length = 200, nullable = false)
     private String title;
+
+    @Column(columnDefinition = "TEXT", nullable = false)
     private String content;
 
-    @Column(name = "like_count")
-    private Long likeCount;
-
-    @Column(name = "view_count")
     private Long viewCount;
+
+    public Post(Boolean isDeleted, String title, String content, Long viewCount) {
+        this.isDeleted = isDeleted;
+        this.title = title;
+        this.content = content;
+        this.viewCount = viewCount;
+    }
+
+    public void update(String title, String content) {
+        this.title = title;
+        this.content = content;
+    }
 }

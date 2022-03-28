@@ -3,17 +3,16 @@ package com.community.project;
 import com.community.project.entity.Member;
 import com.community.project.entity.Post;
 import com.community.project.entity.PostLike;
+import com.community.project.repository.PostLikeRepo;
 import com.community.project.service.MemberService;
-import com.community.project.service.PostLikeService;
 import com.community.project.service.PostService;
+import com.fasterxml.jackson.datatype.hibernate5.Hibernate5Module;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 import org.springframework.transaction.annotation.Transactional;
-
-import static com.community.project.entity.AccountType.*;
 
 @EnableJpaAuditing
 @SpringBootApplication
@@ -24,20 +23,19 @@ public class ProjectApplication {
 	}
 
 	@Bean
-	@Transactional
-	CommandLineRunner run(MemberService memberService, PostService postService, PostLikeService postLikeService) {
-		return args -> {
-			Member member1 = Member.builder().accountType(Realtor)
-					.nickname("kihwan").accountId("501").quit(false).build();
-			Member member2 = Member.builder().accountType(Lessee)
-					.nickname("jiwoo").accountId("601").quit(false).build();
-			Member member3 = Member.builder().accountType(Lessee)
-					.nickname("ryu").accountId("701").quit(false).build();
-			Member member4 = Member.builder().accountType(Lessor)
-					.nickname("kidong").accountId("801").quit(false).build();
+	Hibernate5Module hibernate5Module() {
+		return new Hibernate5Module();
+	}
 
-			Member member5 = Member.builder().accountType(Lessor)
-					.nickname("nagam").accountId("901").quit(true).build();
+	@Bean
+	@Transactional
+	CommandLineRunner run(MemberService memberService, PostService postService, PostLikeRepo postLikeRepo) {
+		return args -> {
+			Member member1 = new Member("KK", "공인중개사", false);
+			Member member2 = new Member("uu", "임대인", false);
+			Member member3 = new Member("ll", "임차인", false);
+			Member member4 = new Member("ii", "임대인", false);
+			Member member5 = new Member("dd", "공인중개사", false);
 
 			Member newMember1 = memberService.saveMember(member1);
 			Member newMember2 = memberService.saveMember(member2);
@@ -46,37 +44,30 @@ public class ProjectApplication {
 			Member newMember5 = memberService.saveMember(member5);
 
 			Post post1 = Post.builder().content("무제한 컨텐츠입니다 하하하 http:101")
-					.title("무제한 컨텐츠")
-					.isDeleted(false).member(member1).build();
+					.title("무제한 컨텐츠").viewCount(0L)
+					.isDeleted(false).build();
 
 			Post post2 = Post.builder().content("개미는 오늘도 뚠뚠 일을한다 뚠뚠")
-					.title("냠냠이")
-					.isDeleted(false).member(member2).build();
+					.title("냠냠이").viewCount(0L)
+					.isDeleted(false).build();
 
 			Post post3 = Post.builder().content("하....이게 뭐고")
-					.title("숨은")
-					.isDeleted(false).member(member3).build();
+					.title("숨은").viewCount(0L)
+					.isDeleted(false).build();
 
-			Post newPost1 = postService.savePost(post1);
-			Post newPost2 = postService.savePost(post2);
-			Post newPost3 = postService.savePost(post3);
+			Post newPost1 = postService.savePost(member1.getId(), post1);
+			Post newPost2 = postService.savePost(member2.getId(), post2);
+			Post newPost3 = postService.savePost(member3.getId(), post3);
 
-			PostLike postLike1 = PostLike.builder().postId(newPost1.getId())
-					.memberId(newMember1.getId()).build();
+			PostLike like1 = new PostLike(newMember1, newPost1);
+			PostLike like2 = new PostLike(newMember2, newPost1);
+			PostLike like3 = new PostLike(newMember3, newPost2);
+			PostLike like4 = new PostLike(newMember4, newPost2);
 
-			PostLike postLike2 = PostLike.builder().postId(newPost2.getId())
-					.memberId(newMember4.getId()).build();
-
-			PostLike postLike3 = PostLike.builder().postId(newPost3.getId())
-					.memberId(newMember3.getId()).build();
-
-			PostLike postLike4 = PostLike.builder().postId(newPost1.getId())
-					.memberId(newMember2.getId()).build();
-
-			postLikeService.savePostLike(postLike1);
-			postLikeService.savePostLike(postLike2);
-			postLikeService.savePostLike(postLike3);
-			postLikeService.savePostLike(postLike4);
+			postLikeRepo.save(like1);
+			postLikeRepo.save(like2);
+			postLikeRepo.save(like3);
+			postLikeRepo.save(like4);
 		};
 	}
 }
