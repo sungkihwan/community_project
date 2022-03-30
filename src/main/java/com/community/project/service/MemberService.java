@@ -32,4 +32,11 @@ public class MemberService {
     public List<Member> findAll() {
         return memberRepo.findAll();
     }
+
+    public Boolean deleteMember(Long id) {
+        Optional<Member> member = memberRepo.findById(id);
+        if (!member.isPresent()) throw new CreateException(USER_NOT_FOUND);
+        member.get().setQuit(true);
+        return member.get().getQuit();
+    }
 }

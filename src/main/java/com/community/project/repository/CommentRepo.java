@@ -12,4 +12,7 @@ public interface CommentRepo extends JpaRepository<Comment, Long> {
 
     @EntityGraph("JoinMemberAndPost")
     List<Comment> findByPostId(Long id);
+
+    @EntityGraph("JoinMemberAndPost")
+    List<Comment> findByMemberId(Long id);
 }

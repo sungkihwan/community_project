@@ -23,8 +23,12 @@ public class CommentService {
     private final MemberRepo memberRepo;
     private final PostRepo postRepo;
 
-    public List<Comment> getComments(Long id) {
+    public List<Comment> getCommentsByPostId(Long id) {
         return commentRepo.findByPostId(id);
+    }
+
+    public List<Comment> getCommentsByMemberId(Long id) {
+        return commentRepo.findByMemberId(id);
     }
 
     public List<Comment> getAllComments() {

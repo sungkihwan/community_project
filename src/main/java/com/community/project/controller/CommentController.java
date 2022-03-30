@@ -20,9 +20,14 @@ import static com.community.project.error.ErrorCode.UNAUTHORIZED_USER;
 public class CommentController {
     private final CommentService commentService;
 
-    @GetMapping("/comment/{id}")
-    public ResponseEntity<Collection<Comment>> getPosts(@PathVariable Long id) {
-        return ResponseEntity.ok().body(commentService.getComments(id));
+    @GetMapping("/comment/post/{id}")
+    public ResponseEntity<Collection<Comment>> getCommentsByPostId(@PathVariable Long id) {
+        return ResponseEntity.ok().body(commentService.getCommentsByPostId(id));
+    }
+
+    @GetMapping("/comment/member/{id}")
+    public ResponseEntity<Collection<Comment>> getCommentsByMemberId(@PathVariable Long id) {
+        return ResponseEntity.ok().body(commentService.getCommentsByMemberId(id));
     }
 
     @GetMapping("/comments")

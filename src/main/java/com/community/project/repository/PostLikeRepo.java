@@ -4,9 +4,11 @@ import com.community.project.entity.Post;
 import com.community.project.entity.PostLike;
 import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Lock;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
+import javax.persistence.LockModeType;
 import java.util.List;
 
 public interface PostLikeRepo extends JpaRepository<PostLike, Long> {

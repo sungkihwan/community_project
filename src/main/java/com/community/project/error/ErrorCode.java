@@ -22,7 +22,7 @@ public enum ErrorCode {
 //    ACCESS_TOKEN_NOT_FOUND(NOT_FOUND, "로그아웃 된 사용자입니다"),
 
     /* 409 CONFLICT : Resource 의 현재 상태와 충돌. 보통 중복된 데이터 존재 */
-//    DUPLICATE_RESOURCE(CONFLICT, "데이터가 이미 존재합니다"),
+    DUPLICATE_RESOURCE(CONFLICT, "데이터가 이미 존재합니다"),
 
     LOCK_FAILED(CONFLICT, "잠금 획득에 실패했습니다."),
     NETWORK_FAILED(CONFLICT, "네트워크 오류가 발생했습니다.");

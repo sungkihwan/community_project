@@ -11,6 +11,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.Collection;
 
 import static com.community.project.error.ErrorCode.UNAUTHORIZED_USER;
@@ -40,7 +41,7 @@ public class PostLikeController {
     @PostMapping("/postlike")
     public void savePostLike(
             @RequestHeader HttpHeaders header,
-            @RequestBody PostLikeDto postLikeDto
+            @RequestBody @Valid PostLikeDto postLikeDto
     ) {
         if (header.get("Authorization") == null || header.get("Authorization").size() == 0) {
             throw new CreateException(UNAUTHORIZED_USER);

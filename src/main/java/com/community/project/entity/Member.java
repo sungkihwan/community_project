@@ -9,7 +9,7 @@ import javax.persistence.Id;
 
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@Getter
+@Getter @Setter
 public class Member {
     @Id @GeneratedValue
     @Column(name = "member_id")

@@ -5,6 +5,7 @@ import com.community.project.entity.Post;
 import com.community.project.entity.PostLike;
 import com.community.project.repository.PostLikeRepo;
 import com.community.project.service.MemberService;
+import com.community.project.service.PostLikeService;
 import com.community.project.service.PostService;
 import com.fasterxml.jackson.datatype.hibernate5.Hibernate5Module;
 import org.springframework.boot.CommandLineRunner;
@@ -13,6 +14,9 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 @EnableJpaAuditing
 @SpringBootApplication
@@ -29,7 +33,7 @@ public class ProjectApplication {
 
 	@Bean
 	@Transactional
-	CommandLineRunner run(MemberService memberService, PostService postService, PostLikeRepo postLikeRepo) {
+	CommandLineRunner run(MemberService memberService, PostService postService, PostLikeRepo postLikeRepo, PostLikeService postLikeService) {
 		return args -> {
 			Member member1 = new Member("KK", "공인중개사", false);
 			Member member2 = new Member("uu", "임대인", false);
@@ -59,15 +63,23 @@ public class ProjectApplication {
 			Post newPost2 = postService.savePost(member2.getId(), post2);
 			Post newPost3 = postService.savePost(member3.getId(), post3);
 
-			PostLike like1 = new PostLike(newMember1, newPost1);
-			PostLike like2 = new PostLike(newMember2, newPost1);
-			PostLike like3 = new PostLike(newMember3, newPost2);
-			PostLike like4 = new PostLike(newMember4, newPost2);
+//			PostLike like1 = new PostLike(newMember1, newPost1);
+//			PostLike like2 = new PostLike(newMember2, newPost1);
+//			PostLike like3 = new PostLike(newMember3, newPost2);
+//			PostLike like4 = new PostLike(newMember4, newPost2);
+//
+//			postLikeRepo.save(like1);
+//			postLikeRepo.save(like2);
+//			postLikeRepo.save(like3);
+//			postLikeRepo.save(like4);
 
-			postLikeRepo.save(like1);
-			postLikeRepo.save(like2);
-			postLikeRepo.save(like3);
-			postLikeRepo.save(like4);
+			int numberOfThreads = 10;
+			ExecutorService service = Executors.newFixedThreadPool(10);
+			for (int i = 0; i < numberOfThreads; i++) {
+				service.execute(() -> {
+					postLikeService.savePostLike(member1.getId(), post1.getId());
+				});
+			}
 		};
 	}
 }
